@@ -209,6 +209,27 @@ export default function ExamSchedule() {
           </p>
         )}
       </motion.div>
+          <button
+        onClick={() => setShowCalendar(!showCalendar)}
+        className="mt-6 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
+      >
+        {showCalendar ? "Hide Calendar" : "View Calendar"}
+      </button>
+
+      {/* Google Calendar Embed (Visible when button is clicked) */}
+      {showCalendar && (
+        <div className="mt-6 w-full flex justify-center">
+          <iframe
+            src="https://calendar.google.com/calendar/embed?src=2a79a6581537d55aba7f0b0c6a3417b74730a7e36055ed90d1ab28011df53489%40group.calendar.google.com&ctz=UTC"
+            style={{ border: "0" }}
+            width="800"
+            height="600"
+            frameBorder="0"
+            scrolling="no"
+            className="shadow-lg rounded-lg"
+          ></iframe>
+        </div>
+      )}
     </div>
   );
 }
