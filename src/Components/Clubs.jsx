@@ -1,76 +1,152 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-const Clubs = () => {
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
+const ClubsList = () => {
   const [clubs, setClubs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const API_URL = import.meta.env.VITE_BACKEND_URL;
+  const [selectedClub, setSelectedClub] = useState(null);
+  const [user, setUser] = useState(null);
+  const [hasRequested, setHasRequested] = useState(false);
 
   useEffect(() => {
-    axios
-      .get(`${API_URL}/clubs`) // Replace with your API URL
-      .then((response) => {
-        setClubs(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching clubs:", error);
-        setLoading(false);
-      });
+    const fetchClubs = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/clubs`, {
+          withCredentials: true,
+        });
+        setClubs(res.data);
+      } catch (err) {
+        console.error("Error fetching clubs:", err);
+      }
+    };
+
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/me`, { withCredentials: true });
+        setUser(res.data.user);
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+    };
+
+    fetchClubs();
+    fetchUser();
   }, []);
 
-  return (
-    <div className="py-20 bg-gradient-to-r from-gray-900 to-gray-800 text-white min-h-screen">
-      <motion.h2
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="text-5xl font-extrabold text-center text-[#FFD700] mb-12 tracking-wide"
-      >
-        University Clubs
-      </motion.h2>
+  const handleClubClick = (club) => {
+    setSelectedClub(club);
+    if (user) {
+      console.log(club);
+      const alreadyRequested = club.members.some(
+        (member) =>
+          member.userId._id === user._id && member.status === "pending"
+      );
+      setHasRequested(alreadyRequested);
+    }
+  };
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 px-6 max-w-7xl mx-auto">
-        {loading
-          ? Array.from({ length: 6 }).map((_, index) => (
-              <div
-                key={index}
-                className="bg-gray-700 animate-pulse rounded-2xl h-64"
-              ></div>
-            ))
-          : clubs.map((club, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2, duration: 0.6 }}
-                whileHover={{ scale: 1.05 }}
-                className="bg-gray-800 bg-opacity-80 backdrop-blur-lg rounded-2xl overflow-hidden shadow-lg transition-all cursor-pointer transform hover:shadow-2xl"
+  const sendJoinReq = async () => {
+    try {
+      await axios.post(`${API_URL}/${selectedClub._id}/join`, null, {
+        withCredentials: true,
+      });
+      setHasRequested(true);
+      alert("Request sent successfully!");
+    } catch (err) {
+      console.error("Error sending join request:", err);
+    }
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto p-6">
+      <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">
+        Clubs
+      </h2>
+
+      {clubs.length === 0 ? (
+        <p className="text-gray-500 text-center">Loading clubs...</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {clubs.map((club) => (
+            <div
+              key={club._id}
+              className="p-4 bg-white rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition"
+              onClick={() => handleClubClick(club)}
+            >
+              <img
+                src={club.imageUrl}
+                alt={club.clubName}
+                className="w-full h-40 object-cover rounded-md"
+              />
+              <h3 className="text-lg font-semibold text-blue-600 mt-2">
+                {club.clubName}
+              </h3>
+              <p className="text-gray-700 text-sm">
+                <strong>Coordinators:</strong>{" "}
+                {club.coordinators.map((c) => c.firstName).join(", ") || "None"}
+              </p>
+              <p className="text-gray-700 text-sm">
+                <strong>Members:</strong> {club.members.length}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Modal for Club Details */}
+      {selectedClub && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg max-w-lg w-full relative">
+            <button
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+              onClick={() => setSelectedClub(null)}
+            >
+              ✖
+            </button>
+            <img
+              src={selectedClub.imageUrl}
+              alt={selectedClub.clubName}
+              className="w-full h-40 object-cover rounded-md"
+            />
+            <h2 className="text-2xl font-bold text-blue-600 mt-2">
+              {selectedClub.clubName}
+            </h2>
+            <p className="text-gray-700 mt-2">
+              <strong>Coordinators:</strong>{" "}
+              {selectedClub.coordinators
+                .map((c) => `${c.firstName} ${c.lastName}`)
+                .join(", ") || "None"}
+            </p>
+            <p className="text-gray-700">
+              <strong>Faculty Advisors:</strong>{" "}
+              {selectedClub.facultyAdvisors.length || "None"}
+            </p>
+            <p className="text-gray-700">
+              <strong>Members:</strong>{" "}
+              {selectedClub.members
+                .map((m) => `${m.userId.firstName} ${m.userId.lastName}`)
+                .join(", ") || "None"}
+            </p>
+            <p className="text-gray-700">
+              <strong>Events:</strong>{" "}
+              {selectedClub.events.length || "No events yet"}
+            </p>
+
+            {/* Join Request Button - Only Show if User Hasn't Requested */}
+            {!hasRequested && (
+              <button
+                onClick={sendJoinReq}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
               >
-                <img
-                  src={club.imageUrl}
-                  alt={club.clubName}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-5">
-                  <h3 className="text-2xl font-semibold text-[#FFD700]">
-                    {club.clubName}
-                  </h3>
-                  <p className="mt-2 text-gray-300">
-                    {club.facultyAdvisors.length > 0
-                      ? `Advised by ${club.facultyAdvisors.join(", ")}`
-                      : "No faculty advisor listed."}
-                  </p>
-                  <p className="mt-2 text-gray-400 text-sm">
-                    {club.members.length} Members
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-      </div>
+                Send Join Request
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Clubs;
+export default ClubsList;

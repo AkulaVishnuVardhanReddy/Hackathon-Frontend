@@ -3,12 +3,12 @@ import LoginPage from "./Components/LoginPage";
 import SignupPage from "./Components/SignupPage";
 import Body from "./Components/Body";
 import Home from "./Components/Home";
-import Clubs from "./Components/Clubs";
 import DiscussionPage from "./Components/DiscussionPage";
 import MainLayout from "./Components/MainLayout";
 import Discussions from "./Components/Discussions";
 import Career from "./Components/Career";
 import Default from "./Components/Default";
+import ClubsList from "./Components/Clubs";
 
 function App() {
   return (
@@ -25,13 +25,12 @@ function App() {
         <Route path="/student" element={<MainLayout />}>
           <Route index element={<Discussions />} />
           <Route path="discussions" element={<Discussions />} />
-          <Route path="clubs" element={<Clubs />} />
+          <Route path="clubs" element={<ClubsList />} />
           <Route path="career" element={<Career />} />
         </Route>
       </Routes>
     </Router>
   );
 }
-
 
 export default App;
