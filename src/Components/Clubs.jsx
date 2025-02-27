@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-const ClubsList = () => {
+const Clubs = () => {
   const [clubs, setClubs] = useState([]);
   const [selectedClub, setSelectedClub] = useState(null);
   const [user, setUser] = useState(null);
@@ -150,4 +150,4 @@ const ClubsList = () => {
   );
 };
 
-export default ClubsList;
+export default Clubs;

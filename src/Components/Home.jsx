@@ -5,7 +5,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 import LoginNavBar from "./LoginNavBar";
 
 // Landing Page Component
-export default function LandingPage() {
+export default function Home() {
   return (
     <div className="bg-white text-gray-900 min-h-screen">
       {/* Carousel Section (No Effects, No Text) */}

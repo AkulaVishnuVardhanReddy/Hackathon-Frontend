@@ -1,6 +1,6 @@
 import { Bell, MessageCircle, User } from "lucide-react";
 
-const Header = () => {
+const Navbar = () => {
   return (
     <header className="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center">
       {/* Left Side - Brand Name */}
@@ -30,4 +30,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Navbar;

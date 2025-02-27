@@ -4,7 +4,7 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-const DiscussionPage = () => {
+const Discussions = () => {
   const [user, setUser] = useState(null);
   const [roomId, setRoomId] = useState("general"); // Default room
 
@@ -54,4 +54,4 @@ const DiscussionPage = () => {
   );
 };
 
-export default DiscussionPage;
+export default Discussions;
