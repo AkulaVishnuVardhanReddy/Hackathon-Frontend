@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
+import LoginNavBar from "./LoginNavBar";
 
 const MainLayout = () => {
   return (
@@ -9,8 +9,8 @@ const MainLayout = () => {
       <Sidebar />
 
       <div className="flex flex-col flex-grow">
-        {/* Navbar */}
-        <Navbar />
+        {/* LoginNavBar */}
+        <LoginNavBar />
 
         {/* Dynamic Content */}
         <div className="p-6 bg-gray-100 h-full overflow-auto">
