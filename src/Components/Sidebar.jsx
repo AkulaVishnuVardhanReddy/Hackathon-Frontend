@@ -21,8 +21,10 @@ const Sidebar = () => {
         <NavItem to="/student" icon={<Home size={22} />} label="Home" />
         <NavItem to="discussions" icon={<MessageCircle size={22} />} label="Discussions" />
         <NavItem to="clubs" icon={<Users size={22} />} label="Clubs" />
-        <NavItem to="career" icon={<Briefcase size={22} />} label="Careers" />
+       
+        <NavItem to="events" icon={<Briefcase size={22} />} label="Events" />
         <NavItem to="examschedule" icon={<Calendar size={22} />} label="Exam Schedule" />
+    
       </nav>
 
       {/* Logout Button */}
